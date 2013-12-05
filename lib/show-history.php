@@ -204,6 +204,7 @@ function it_exchange_customer_history_admin_email( $output, $transaction ) {
 	// Append user history to the email body
 	$output .= it_exchange_customer_history_get_browsing_history( $transaction->ID );
 	$output .= it_exchange_customer_history_get_purchase_history( $transaction->ID );
+	$output .= '<style type="text/css">' . file_get_contents( dirname(__FILE__) . '/admin.css' ) . '</style>';
 
 	// Return the output
 	return $output;
