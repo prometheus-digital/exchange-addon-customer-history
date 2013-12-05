@@ -73,7 +73,7 @@ function it_exchange_customer_history_get_browsing_history( $transaction_id = 0 
 				continue;
 
 			$output .= '<tr>';
-			$output .= '<td>' . $count++ . '. <a href="' . esc_url( $history['url'] ) . '" target="_blank">' . esc_url( $history['url'] ) . '</a></td>';
+			$output .= '<td class="url">' . $count++ . '. <a href="' . esc_url( $history['url'] ) . '" target="_blank">' . esc_url( $history['url'] ) . '</a></td>';
 			$output .= '<td>' . date( 'Y/m/d \&\n\d\a\s\h\; h:i:sa', ( $history['time'] + get_option( 'gmt_offset' ) * 3600 ) ) . '</td>';
 			$next = isset( $user_history[ $key + 1 ] ) ? $user_history[ $key + 1 ] : end( $user_history );
 			$output .= '<td class="align-right">' . it_exchange_customer_history_calculate_elapsed_time( $history['time'], $next['time'] ) . '</td>';
@@ -97,7 +97,7 @@ function it_exchange_customer_history_get_browsing_history( $transaction_id = 0 
 	$output .= '</div>';
 
 	// Echo our output
-	echo $output;
+	return $output;
 } /* it_exchange_customer_history_get_browsing_history() */
 
 /**
@@ -163,7 +163,7 @@ function it_exchange_customer_history_get_purchase_history( $transaction_id = 0 
 	// Close out the container
 	$output .= '</div>';
 
-	echo $output;
+	return $output;
 } /* it_exchange_customer_history_get_purchase_history() */
 
 /**
