@@ -35,12 +35,6 @@ class Exchange_Customer_History_Init {
 		add_action( 'admin_notices', array( $this, 'maybe_disable_plugin' ) );
 		add_action( 'plugins_loaded', array( $this, 'i18n' ) );
 		add_action( 'it_exchange_register_addons', array( $this, 'register_addon' ) );
-		add_action( 'ithemes_updater_register', array( $this, 'register_updates' ) );
-
-		// Include automatic updates class if present
-		if ( file_exists( dirname( __FILE__ ) . '/lib/updater/load.php' ) )
-			require( dirname( __FILE__ ) . '/lib/updater/load.php' );
-
 
 	} /* __construct() */
 
@@ -67,17 +61,6 @@ class Exchange_Customer_History_Init {
 		);
 		it_exchange_register_addon( 'customer_history', $options );
 	} /* register_addon() */
-
-	/**
-	 * Register add-on for automatic updates from iThemes.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param object $updater iThemes updater object.
-	 */
-	function register_updates( $updater ) {
-		$updater->register( 'exchange-addon-customer-history', __FILE__ );
-	} /* register_updates() */
 
 	/**
 	 * Check if all requirements are met.
@@ -117,3 +100,9 @@ class Exchange_Customer_History_Init {
 	} /* maybe_disable_plugin() */
 }
 $Exchange_Customer_History_Init = new Exchange_Customer_History_Init;
+
+function ithemes_repository_exchange_addon_customer_history_updater_register( $updater ) { 
+    $updater->register( 'exchange-addon-customer-history', __FILE__ );
+}
+add_action( 'ithemes_updater_register', 'ithemes_repository_exchange_addon_customer_history_updater_register' );
+require( dirname( __FILE__ ) . '/lib/updater/load.php' );
