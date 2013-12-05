@@ -12,11 +12,12 @@
 /**
  * Render browsing history.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
- * @param integer $transaction_id Transaction post ID.
+ * @param  integer $transaction_id Transaction post ID.
+ * @return string                  HTML Markup for browsing history table.
  */
-function it_exchange_customer_history_output_browsing_history( $transaction_id = 0 ) {
+function it_exchange_customer_history_get_browsing_history( $transaction_id = 0 ) {
 
 	// Attempt to retrieve post ID from query arg
 	if ( ! $transaction_id )
@@ -97,8 +98,7 @@ function it_exchange_customer_history_output_browsing_history( $transaction_id =
 
 	// Echo our output
 	echo $output;
-} /* it_exchange_customer_history_output_browsing_history() */
-add_action( 'it_exchange_after_payment_details', 'it_exchange_customer_history_output_browsing_history' );
+} /* it_exchange_customer_history_get_browsing_history() */
 
 /**
  * Render purchase history.
@@ -106,8 +106,9 @@ add_action( 'it_exchange_after_payment_details', 'it_exchange_customer_history_o
  * @since  1.0.0
  *
  * @param  integer $transaction_id Transaction post ID.
+ * @return string                  HTML Markup for purchase history table.
  */
-function it_exchange_customer_history_output_purchase_history( $transaction_id = 0 ) {
+function it_exchange_customer_history_get_purchase_history( $transaction_id = 0 ) {
 
 	// Attempt to retrieve post ID from query arg
 	if ( ! $transaction_id )
@@ -163,11 +164,30 @@ function it_exchange_customer_history_output_purchase_history( $transaction_id =
 	$output .= '</div>';
 
 	echo $output;
-} /* it_exchange_customer_history_output_purchase_history() */
+} /* it_exchange_customer_history_get_purchase_history() */
+
+/**
+ * Output browsing history on payment details page.
+ *
+ * @since  1.0.0
+ */
+function it_exchange_customer_history_output_browsing_history() {
+	echo it_exchange_customer_history_get_browsing_history();
+}
+add_action( 'it_exchange_after_payment_details', 'it_exchange_customer_history_output_browsing_history' );
+
+/**
+ * Output purchase history on payment details page.
+ *
+ * @since  1.0.0
+ */
+function it_exchange_customer_history_output_purchase_history() {
+	echo it_exchange_customer_history_get_purchase_history();
+}
 add_action( 'it_exchange_after_payment_details', 'it_exchange_customer_history_output_purchase_history' );
 
 /**
- * Add user history to admin purchase notification emails.
+ * Output browsing and purchase history in admin notification emails.
  *
  * @since  1.0.0
  *
@@ -178,8 +198,8 @@ add_action( 'it_exchange_after_payment_details', 'it_exchange_customer_history_o
 function it_exchange_customer_history_admin_email( $output, $transaction ) {
 
 	// Append user history to the email body
-	$output .= it_exchange_customer_history_output_browsing_history( $transaction->ID );
-	$output .= it_exchange_customer_history_output_purchase_history( $transaction->ID );
+	$output .= it_exchange_customer_history_get_browsing_history( $transaction->ID );
+	$output .= it_exchange_customer_history_get_purchase_history( $transaction->ID );
 
 	// Return the output
 	return $output;
