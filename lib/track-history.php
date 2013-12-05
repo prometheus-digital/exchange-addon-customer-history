@@ -140,6 +140,9 @@ class Exchange_Track_Customer_History {
 
 		}
 
+		// Return the original transaction ID so nothing breaks
+		return $transaction_id;
+
 	} /* save_user_history() */
 
 	/**
