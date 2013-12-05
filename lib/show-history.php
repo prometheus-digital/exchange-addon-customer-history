@@ -56,13 +56,17 @@ function it_exchange_customer_history_get_browsing_history( $transaction_id = 0 
 		if ( $search_history )
 			$output .= '<p>' . sprintf( __( 'Original search query: %s', 'LION' ), '<strong><mark>' . $search_history . '</mark></strong>' ) . '</p>';
 
+		// Setup tooptips that only display in wp-admin
+		$time_tip = is_admin() ? '<span class="tip" title="' . __( 'Time elapsed between this page and the next.', 'LION' ) . '">i</span>' : '';
+		$total_tip = is_admin() ? '<span class="tip" title="' . __( 'Time elapsed since first arriving on site.', 'LION' ) . '">i</span>' : '';
+
 		// Output ordered list of browsing history
 		$output .= '<table class="history-table" cellpadding="0" cellspacing="0" border="0">';
 		$output .= '<tr>';
 		$output .= '<th>' . __( 'URL', 'LION' ) . '</th>';
 		$output .= '<th>' . __( 'Timestamp', 'LION' ) . '</th>';
-		$output .= '<th class="align-right">' . __( 'Time on Page', 'LION' ) . '<span class="tip" title="' . __( 'Time elapsed between this page and the next.', 'LION' ) . '">i</span></th>';
-		$output .= '<th class="align-right">' . __( 'Total', 'LION' ) . '<span class="tip" title="' . __( 'Time elapsed since first arriving on site.', 'LION' ) . '">i</span></th>';
+		$output .= '<th class="align-right">' . __( 'Time on Page', 'LION' ) . $time_tip . '</th>';
+		$output .= '<th class="align-right">' . __( 'Total', 'LION' ) . $total_tip . '</th>';
 		$output .= '</tr>';
 		$count = 1;
 		foreach ( $user_history as $key => $history ) {
