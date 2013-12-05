@@ -26,7 +26,7 @@ class Exchange_Track_Customer_History {
 		add_action( 'it_exchange_register_addons', array( $this, 'register_addon' ) );
 		add_action( 'template_redirect', array( $this, 'update_user_history' ) );
 		add_action( 'it_exchange_generate_transaction_object', array( $this, 'update_transaction_object') );
-		add_filter( 'it_exchange_add_transaction', array( $this, 'save_user_history' ), 10, 7 );
+		add_action( 'it_exchange_add_transaction_success', array( $this, 'save_user_history' ), 9 );
 
 		// Uncomment the following action to enable devmode
 		// add_action( 'get_header', array( $this, 'devmode' ) );
@@ -94,54 +94,46 @@ class Exchange_Track_Customer_History {
 	/**
 	 * Store user history in transaction meta.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
-	 * @param  integer $transaction_id Transaction post ID.
-	 * @param  string  $method         Transaction method name.
-	 * @param  integer $method_id      Transaction method ID.
-	 * @param  string  $status         Transaction status.
-	 * @param  integer $customer_id    User ID.
-	 * @param  object  $cart_object    Cart object.
-	 * @param  array   $args           Additional transaction arguments.
+	 * @param integer $transaction_id Transaction post ID.
 	 */
-	public function save_user_history( $transaction_id, $method, $method_id, $status, $customer_id, $cart_object, $args ) {
+	public function save_user_history( $transaction_id = 0 ) {
 
 		// If there is no transaction ID, bail here
 		if ( ! $transaction_id )
 			return;
 
 		// Grab the user history from the transaction object
+		$cart_object = get_post_meta( $transaction_id, '_it_exchange_cart_object', true );
 		$user_history = $cart_object->user_history;
 
 		// If user history was captured, sanitize and store the URLs
 		if ( is_array( $user_history ) && ! empty( $user_history ) ) {
 
 			// Setup a clean, safe array for the database
-			$sanitized_urls = array();
+			$sanitized_history = array();
 
 			// Sanitize the referrer a bit differently,
 			// than the rest because it may not be a URL.
 			$referrer = array_shift( $user_history );
-			$sanitized_urls[] = array(
+			$sanitized_history[] = array(
 				'url'  => sanitize_text_field( $referrer['url'] ),
 				'time' => absint( $referrer['time'] ),
 			);
 
 			// Sanitize each additional URL
 			foreach ( $user_history as $history ) {
-				$sanitized_urls[] = array(
+				$sanitized_history[] = array(
 					'url'  => esc_url_raw( $history['url'] ),
 					'time' => absint( $history['time'] ),
 				);
 			}
 
 			// Store sanitized history as post meta
-			update_post_meta( $transaction_id, '_user_history', $sanitized_urls );
+			update_post_meta( $transaction_id, '_user_history', $sanitized_history );
 
 		}
-
-		// Return the original transaction ID so nothing breaks
-		return $transaction_id;
 
 	} /* save_user_history() */
 
