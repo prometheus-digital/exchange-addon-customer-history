@@ -2,7 +2,7 @@
 /**
  * Plugin Name: iThemes Exchange - Customer History Add-on
  * Plugin URI: http://ithemes.com/exchange/
- * Description: Track and store customer browsing history with their completed paments. There are no settings for this add-on.
+ * Description: Track and store customer browsing history with their completed payments. There are no settings for this add-on.
  * Version: 1.0.0
  * Author: Brian Richards
  * Author URI: http://rzen.net
@@ -79,7 +79,7 @@ class Exchange_Customer_History_Init {
 	function register_addon() {
 		$options = array(
 			'name'              => __( 'Customer History', 'LION' ),
-			'description'       => sprintf( __( 'Track and store customer browsing history with their %s. There are no settings for this add-on.', 'LION' ), '<a href="' . admin_url( 'edit.php?post_type=it_exchange_tran' ) . '">' . __( 'completed paments', 'LION' ) . '</a>' ),
+			'description'       => sprintf( __( 'Track and store customer browsing history with their %s. There are no settings for this add-on.', 'LION' ), '<a href="' . admin_url( 'edit.php?post_type=it_exchange_tran' ) . '">' . __( 'completed payments', 'LION' ) . '</a>' ),
 			'author'            => 'Brian Richards',
 			'author_url'        => 'http://rzen.net/',
 			'icon'              => $this->directory_url . '/lib/images/customer-history-icon.png',
