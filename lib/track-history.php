@@ -100,8 +100,8 @@ class Exchange_Track_Customer_History {
 	 */
 	public function save_user_history( $transaction_id = 0 ) {
 
-		// If there is no transaction ID, bail here
-		if ( ! $transaction_id )
+		// If there is no transaction ID or in admin, bail here
+		if ( ! $transaction_id || is_admin() )
 			return;
 
 		// Grab the user history from the transaction object
