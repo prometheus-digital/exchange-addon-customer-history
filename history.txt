@@ -1,2 +1,2 @@
-1.0.0 - 2013-12-05 - Brian Richards
+1.0.0 - 2013-12-09 - Brian Richards
 	Initial Commit
