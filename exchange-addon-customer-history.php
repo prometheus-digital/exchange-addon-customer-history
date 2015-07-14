@@ -3,7 +3,7 @@
  * Plugin Name: iThemes Exchange - Customer History Add-on
  * Plugin URI: http://ithemes.com/exchange/
  * Description: Track and store customer browsing history with their completed payments. There are no settings for this add-on.
- * Version: 1.0.6
+ * Version: 1.0.7
  * Author: Brian Richards
  * Author URI: http://rzen.net
  * License: GPL2
