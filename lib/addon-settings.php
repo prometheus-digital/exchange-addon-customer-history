@@ -80,10 +80,9 @@ class IT_Exchange_Customer_History_Add_On {
 	}
 
 	function print_settings_page() {
-		global $new_values;
 		$settings = it_exchange_get_option( 'addon_customer_history', true, false );
 
-		$form_values  = empty( $this->error_message ) ? $settings : $new_values;
+		$form_values  = empty( $this->error_message ) ? $settings : ITForm::get_post_data();
 		$form_options = array(
 			'id'      => apply_filters( 'it_exchange_add_on_customer_history', 'it-exchange-add-on-customer-history-settings' ),
 			'enctype' => apply_filters( 'it_exchange_add_on_customer_history_settings_form_enctype', false ),
@@ -91,8 +90,8 @@ class IT_Exchange_Customer_History_Add_On {
 		);
 		$form         = new ITForm( $form_values, array( 'prefix' => 'it-exchange-add-on-customer-history' ) );
 
-		if ( ! empty ( $this->statcanadian_message ) )
-			ITUtility::show_statcanadian_message( $this->statcanadian_message );
+		if ( ! empty ( $this->status_message ) )
+			ITUtility::show_status_message( $this->status_message );
 		if ( ! empty( $this->error_message ) )
 			ITUtility::show_error_message( $this->error_message );
 
@@ -149,28 +148,24 @@ class IT_Exchange_Customer_History_Add_On {
 	 * @return void
 	*/
     function save_settings() {
-    	global $new_values; //We set this as global here to modify it in the error check
-
         $defaults = it_exchange_get_option( 'addon_customer_history' );
-        $new_values = ITForm::get_post_data();
-        $organized_values = array();
+        $new_values = wp_parse_args( ITForm::get_post_data(), $defaults );
 
         // Check nonce
-        if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'it-exchange-customer-history-settings' ) ) {
-            $this->error_message = __( 'Error. Please try again', 'LION' );
-            return;
-        }
+    		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'it-exchange-customer-history-settings' ) ) {
+    			$this->error_message = __( 'Error. Please try again', 'LION' );
+    			return;
+    		}
 
-        $errors = apply_filters( 'it_exchange_add_on_customer_history_validate_settings', $this->get_form_errors( $new_values ), $new_values );
-
-        if ( ! $errors && it_exchange_save_option( 'addon_customer_history', $new_values ) ) {
-            ITUtility::show_status_message( __( 'Settings saved.', 'LION' ) );
-        } else if ( $errors ) {
-            $errors = implode( '<br />', $errors );
-            $this->error_message = $errors;
-        } else {
-            $this->status_message = __( 'Settings not saved.', 'LION' );
-        }
+    		$errors = apply_filters( 'it_exchange_add_on_manual_transaction_validate_settings', $this->get_form_errors( $new_values ), $new_values );
+    		if ( ! $errors && it_exchange_save_option( 'addon_customer_history', $new_values ) ) {
+    			ITUtility::show_status_message( __( 'Settings saved.', 'LION' ) );
+    		} else if ( $errors ) {
+    			$errors = implode( '<br />', $errors );
+    			$this->error_message = $errors;
+    		} else {
+    			$this->status_message = __( 'Settings not saved.', 'LION' );
+    		}
 
 				if( isset( $_POST['exchange_customer_history_license_activate'] ) ) {
 
