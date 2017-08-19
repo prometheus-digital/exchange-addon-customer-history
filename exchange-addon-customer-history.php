@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: iThemes Exchange - Customer History Add-on
- * Plugin URI: http://ithemes.com/exchange/
+ * Plugin Name: ExchangeWP - Customer History Add-on
+ * Plugin URI: https://exchangewp.com/downloads/customer-history/
  * Description: Track and store customer browsing history with their completed payments. There are no settings for this add-on.
- * Version: 1.0.7
- * Author: Brian Richards
- * Author URI: http://rzen.net
+ * Version: 1.0.8
+ * Author: ExchangeWP
+ * Author URI: https://exchangewp.com
  * License: GPL2
  * Text Domain: LION
  * Domain Path: /lang
- * iThemes Package: exchange-addon-customer-history
+ * ExchangeWP Package: exchange-addon-customer-history
  *
  * Installation:
  * 1. Download and unzip the latest release zip file.
@@ -79,14 +79,14 @@ class Exchange_Customer_History_Init {
 	function register_addon() {
 		$options = array(
 			'name'              => __( 'Customer History', 'LION' ),
-			'description'       => sprintf( __( 'Track and store customer browsing history with their %s. There are no settings for this add-on.', 'LION' ), '<a href="' . admin_url( 'edit.php?post_type=it_exchange_tran' ) . '">' . __( 'completed payments', 'LION' ) . '</a>' ),
-			'author'            => 'Brian Richards',
-			'author_url'        => 'http://rzen.net/',
+			'description'       => sprintf( __( 'Track and store customer browsing history with their %s.', 'LION' ), '<a href="' . admin_url( 'edit.php?post_type=it_exchange_tran' ) . '">' . __( 'completed payments', 'LION' ) . '</a>' ),
+			'author'            => 'ExchangeWP',
+			'author_url'        => 'https://exchangewp.com/downloads/customer-history/',
 			'icon'              => $this->directory_url . '/lib/images/customer-history-icon.png',
 			'file'              => $this->directory_path . '/lib/init.php',
 			'category'          => 'admin',
 			'supports'          => null,
-			'settings-callback' => null,
+			'settings-callback' => 'it_exchange_customer_history_addon_settings_callback',
 		);
 		it_exchange_register_addon( 'customer_history', $options );
 	} /* register_addon() */
@@ -128,7 +128,7 @@ class Exchange_Customer_History_Init {
 		if ( ! $this->meets_requirements() ) {
 			// Display our error
 			echo '<div id="message" class="error">';
-			echo '<p>' . sprintf( __( 'iThemes Exchange Customer History requires iThemes Exchange 1.7.1 or greater and has been <a href="%s">deactivated</a>. Please install, activate or update iThemes Exchange and then reactivate this plugin.', 'LION' ), admin_url( 'plugins.php' ) ) . '</p>';
+			echo '<p>' . sprintf( __( 'ExchangeWP Customer History requires iThemes Exchange 1.7.1 or greater and has been <a href="%s">deactivated</a>. Please install, activate or update iThemes Exchange and then reactivate this plugin.', 'LION' ), admin_url( 'plugins.php' ) ) . '</p>';
 			echo '</div>';
 
 			// Deactivate our plugin
@@ -150,4 +150,34 @@ function ithemes_repository_exchange_addon_customer_history_updater_register( $u
     $updater->register( 'exchange-addon-customer-history', __FILE__ );
 }
 add_action( 'ithemes_updater_register', 'ithemes_repository_exchange_addon_customer_history_updater_register' );
-require( dirname( __FILE__ ) . '/lib/updater/load.php' );
+// require( dirname( __FILE__ ) . '/lib/updater/load.php' );
+
+if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
+ 	require_once 'EDD_SL_Plugin_Updater.php';
+ }
+
+ function exchange_customer_history_plugin_updater() {
+
+ 	// retrieve our license key from the DB
+ 	// this is going to have to be pulled from a seralized array to get the actual key.
+ 	// $license_key = trim( get_option( 'exchange_customer_history_license_key' ) );
+	$exchangewp_customer_history_options = get_option( 'it-storage-exchange_customer_history-addon' );
+	$license_key = trim( $exchangewp_customer_history_options['customer_history-license-key'] );
+
+ 	// setup the updater
+ 	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
+ 			'version' 		=> '1.0.8', 				// current version number
+ 			'license' 		=> $license_key, 		// license key (used get_option above to retrieve from DB)
+ 			'item_name' 	=> 'customer-history', 	  // name of this plugin
+ 			'author' 	  	=> 'ExchangeWP',    // author of this plugin
+ 			'url'       	=> home_url(),
+ 			'wp_override' => true,
+ 			'beta'		  	=> false
+ 		)
+ 	);
+ 	// var_dump($edd_updater);
+ 	// die();
+
+ }
+
+ add_action( 'admin_init', 'exchange_customer_history_plugin_updater', 0 );
