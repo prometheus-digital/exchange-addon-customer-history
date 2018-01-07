@@ -3,7 +3,7 @@
  * Plugin Name: ExchangeWP - Customer History Add-on
  * Plugin URI: https://exchangewp.com/downloads/customer-history/
  * Description: Track and store customer browsing history with their completed payments. There are no settings for this add-on.
- * Version: 1.0.8
+ * Version: 0.0.1
  * Author: ExchangeWP
  * Author URI: https://exchangewp.com
  * License: GPL2
@@ -86,7 +86,6 @@ class Exchange_Customer_History_Init {
 			'file'              => $this->directory_path . '/lib/init.php',
 			'category'          => 'admin',
 			'supports'          => null,
-			'settings-callback' => 'it_exchange_customer_history_addon_settings_callback',
 		);
 		it_exchange_register_addon( 'customer_history', $options );
 	} /* register_addon() */
@@ -140,43 +139,31 @@ class Exchange_Customer_History_Init {
 $Exchange_Customer_History_Init = new Exchange_Customer_History_Init;
 
 /**
- * Include iThemes custom updater.
+ * ExchangeWP updater.
  *
  * @since  1.0.0
  *
  * @param  object $updater iThemes Updater object.
  */
-function ithemes_repository_exchange_addon_customer_history_updater_register( $updater ) {
-    $updater->register( 'exchange-addon-customer-history', __FILE__ );
-}
-add_action( 'ithemes_updater_register', 'ithemes_repository_exchange_addon_customer_history_updater_register' );
-// require( dirname( __FILE__ ) . '/lib/updater/load.php' );
-
-if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
- 	require_once 'EDD_SL_Plugin_Updater.php';
- }
-
  function exchange_customer_history_plugin_updater() {
 
- 	// retrieve our license key from the DB
- 	// this is going to have to be pulled from a seralized array to get the actual key.
- 	// $license_key = trim( get_option( 'exchange_customer_history_license_key' ) );
-	$exchangewp_customer_history_options = get_option( 'it-storage-exchange_customer_history-addon' );
-	$license_key = trim( $exchangewp_customer_history_options['customer_history-license-key'] );
+ 	$license_check = get_transient( 'exchangewp_license_check' );
 
- 	// setup the updater
- 	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
- 			'version' 		=> '1.0.8', 				// current version number
- 			'license' 		=> $license_key, 		// license key (used get_option above to retrieve from DB)
- 			'item_name' 	=> 'customer-history', 	  // name of this plugin
- 			'author' 	  	=> 'ExchangeWP',    // author of this plugin
- 			'url'       	=> home_url(),
- 			'wp_override' => true,
- 			'beta'		  	=> false
- 		)
- 	);
- 	// var_dump($edd_updater);
- 	// die();
+ 	if ($license_check->license == 'valid' ) {
+ 		$license_key = it_exchange_get_option( 'exchangewp_licenses' );
+ 		$license = $license_key['exchange_license'];
+
+ 		$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
+ 				'version' 		=> '0.0.1', 				// current version number
+ 				'license' 		=> $license, 		// license key (used get_option above to retrieve from DB)
+ 				'item_name' 	=> urlencode('Customer History'), 	  // name of this plugin
+ 				'author' 	  	=> 'ExchangeWP',    // author of this plugin
+ 				'url'       	=> home_url(),
+ 				'wp_override' => true,
+ 				'beta'		  	=> false
+ 			)
+ 		);
+ 	}
 
  }
 
