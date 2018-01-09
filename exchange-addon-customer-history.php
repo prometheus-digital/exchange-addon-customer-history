@@ -3,7 +3,7 @@
  * Plugin Name: ExchangeWP - Customer History Add-on
  * Plugin URI: https://exchangewp.com/downloads/customer-history/
  * Description: Track and store customer browsing history with their completed payments. There are no settings for this add-on.
- * Version: 0.0.1
+ * Version: 1.0.9
  * Author: ExchangeWP
  * Author URI: https://exchangewp.com
  * License: GPL2
@@ -154,9 +154,9 @@ $Exchange_Customer_History_Init = new Exchange_Customer_History_Init;
  		$license = $license_key['exchange_license'];
 
  		$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
- 				'version' 		=> '0.0.1', 				// current version number
- 				'license' 		=> $license, 		// license key (used get_option above to retrieve from DB)
- 				'item_name' 	=> urlencode('Customer History'), 	  // name of this plugin
+ 				'version' 		=> '1.0.9', 				// current version number
+ 				'license' 		=> $license, 				// license key (used get_option above to retrieve from DB)
+ 				'item_id' 		=> 382,					 	  // name of this plugin
  				'author' 	  	=> 'ExchangeWP',    // author of this plugin
  				'url'       	=> home_url(),
  				'wp_override' => true,
